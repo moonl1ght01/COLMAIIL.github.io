@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Email Builder – Daniele Colucci</title>
+  <style>
+    :root{
+      --bg:#0a0a0a; --panel:#0f0f0f; --ink:#e6ffe6; --muted:#9AA79A; --brand:#00FF6A; --brand-2:#00CC4F; --line:#1f1f1f;
+    }
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji"}
+    .wrap{display:grid;grid-template-columns:360px 1fr;gap:16px;min-height:100vh}
+    header{grid-column:1/-1;padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px}
+    header h1{font-size:18px;margin:0;font-family:"Courier New",monospace;color:var(--brand)}
+    header .tag{font-size:12px;color:var(--muted)}
+
+    aside{background:var(--panel);border-right:1px solid var(--line);padding:16px;}
+    main{padding:16px;}
+    .group{border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
+    .group h3{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px;letter-spacing:.4px;color:var(--brand)}
+    .group .body{padding:12px}
+
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    input, textarea, select{width:100%;background:#0b0b0b;border:1px solid #1b1b1b;color:var(--ink);padding:10px;border-radius:8px}
+    textarea{min-height:72px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hint{font-size:11px;color:var(--muted)}
+    .checkbox{display:flex;align-items:center;gap:8px;margin:6px 0;color:var(--ink);font-size:13px}
+
+    .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    button{background:var(--brand);border:0;color:#001a09;font-weight:700;padding:10px 14px;border-radius:10px;cursor:pointer}
+    button[secondary]{background:#151515;color:var(--ink);border:1px solid var(--line)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+
+    .split{display:grid;grid-template-columns:1fr 480px;gap:16px}
+    .card{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .card h3{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--brand)}
+    .card .body{padding:0}
+    #preview{width:100%;height:640px;border:0;background:white}
+    #htmlOut{width:100%;min-height:320px}
+    .mini{font-size:12px;color:var(--muted)}
+    .footer{grid-column:1/-1;padding:12px 16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+    .badge{display:inline-block;padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:#0c0c0c;color:var(--muted);font-size:11px}
+    .glow{box-shadow:0 0 24px rgba(0,255,106,.15)}
+    .kv{display:grid;grid-template-columns:140px 1fr;gap:12px;align-items:center}
+    .sep{height:1px;background:var(--line);margin:12px 0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Daniele Colucci — Email Builder</h1>
+      <span class="tag">Hacker‑style • Verde/Nero/Bianco</span>
+      <span class="badge">GitHub Pages ready</span>
+    </header>
+
+    <aside>
+      <form id="form">
+        <div class="group">
+          <h3>Meta</h3>
+          <div class="body">
+            <label>Oggetto</label>
+            <input id="subject" placeholder="Es. Proposta di collaborazione" />
+            <label style="margin-top:10px">Preheader (anteprima)</label>
+            <input id="preheader" placeholder="Anteprima 40–90 caratteri" maxlength="90" />
+            <div class="checkbox"><input type="checkbox" id="darkMode" checked> <span>Forza tema scuro anteprima</span></div>
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>Contenuto</h3>
+          <div class="body">
+            <div class="row">
+              <div>
+                <label>Titolo</label>
+                <input id="title" placeholder="Titolo principale" />
+              </div>
+              <div>
+                <label>Sottotitolo</label>
+                <input id="subtitle" placeholder="Contesto breve" />
+              </div>
+            </div>
+            <label style="margin-top:10px">Apertura</label>
+            <textarea id="opening" placeholder="Grazie per il tempo... Ti scrivo per ..."></textarea>
+            <label>Messaggio principale</label>
+            <textarea id="mainmsg" placeholder="In breve: ..."></textarea>
+            <div class="row">
+              <div>
+                <label>Punto 1</label>
+                <input id="b1" />
+              </div>
+              <div>
+                <label>Punto 2</label>
+                <input id="b2" />
+              </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label>Punto 3</label>
+                <input id="b3" />
+              </div>
+              <div class="kv">
+                <div class="checkbox"><input type="checkbox" id="withCTA" checked> <span>Includi CTA</span></div>
+              </div>
+            </div>
+            <div id="ctaBlock">
+              <div class="row" style="margin-top:10px">
+                <div>
+                  <label>Testo CTA</label>
+                  <input id="ctaText" placeholder="Prenota una call" />
+                </div>
+                <div>
+                  <label>URL CTA</label>
+                  <input id="ctaUrl" placeholder="https://..." />
+                </div>
+              </div>
+            </div>
+            <div class="sep"></div>
+            <div class="checkbox"><input type="checkbox" id="withPS"> <span>Includi P.S.</span></div>
+            <label id="psLabel" style="display:none">P.S.</label>
+            <textarea id="ps" style="display:none" placeholder="Breve payoff o tocco memorabile"></textarea>
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>Firma e link</h3>
+          <div class="body">
+            <div class="row">
+              <div>
+                <label>Ruolo</label>
+                <input id="role" placeholder="Ruolo" />
+              </div>
+              <div>
+                <label>Azienda</label>
+                <input id="company" placeholder="Azienda" />
+              </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label>Telefono</label>
+                <input id="phone" placeholder="+39 ..." />
+              </div>
+              <div>
+                <label>Email</label>
+                <input id="email" placeholder="nome@dominio.it" />
+              </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label>LinkedIn URL</label>
+                <input id="linkedin" placeholder="https://www.linkedin.com/in/..." />
+              </div>
+              <div>
+                <label>Sito URL (header)</label>
+                <input id="site" placeholder="https://..." />
+              </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label>Preferenze URL</label>
+                <input id="prefs" placeholder="https://..." />
+              </div>
+              <div>
+                <label>Disiscrizione URL</label>
+                <input id="unsub" placeholder="https://..." />
+              </div>
+            </div>
+            <div style="margin-top:10px">
+              <label>Privacy URL</label>
+              <input id="privacy" placeholder="https://..." />
+            </div>
+            <div style="margin-top:10px">
+              <label>Indirizzo per footer</label>
+              <input id="address" placeholder="Via..., Città" />
+            </div>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button type="button" id="gen" class="glow">Genera HTML</button>
+          <button type="button" id="copyHtml" secondary>Copia HTML</button>
+          <button type="button" id="downloadHtml" secondary>Scarica .html</button>
+          <button type="button" id="copySubject" secondary>Copia Oggetto</button>
+          <button type="button" id="copyPreheader" secondary>Copia Preheader</button>
+        </div>
+        <p class="mini">Tip: dopo aver generato, usa “Copia HTML” e incolla nel tuo ESP (Mailchimp/Brevo/HubSpot) oppure invia direttamente con Gmail (incolla come HTML nel body con estensioni dedicate).</p>
+      </form>
+    </aside>
+
+    <main>
+      <div class="split">
+        <div class="card">
+          <h3>Anteprima</h3>
+          <div class="body">
+            <iframe id="preview" title="Anteprima email"></iframe>
+          </div>
+        </div>
+        <div class="card">
+          <h3>HTML generato</h3>
+          <div class="body" style="padding:12px">
+            <textarea id="htmlOut" spellcheck="false"></textarea>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="footer">
+      <div>Made for <strong>Daniele Colucci</strong> · stile hacker</div>
+      <div class="mini">Pubblica questo file come <em>index.html</em> su GitHub Pages</div>
+    </div>
+  </div>
+
+  <script>
+    const qs = id => document.getElementById(id);
+
+    const template = () => `<!DOCTYPE html>
+<html lang="it" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8"> 
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+  <title>${escapeHtml(qs('subject').value || 'Email')}</title>
+  <style>
+    html, body { margin:0 !important; padding:0 !important; height:100% !important; width:100% !important; }
+    * { -ms-text-size-adjust:100%; -webkit-text-size-adjust:100%; }
+    div[style*="margin: 16px 0"] { margin:0 !important; }
+    table, td { mso-table-lspace:0pt !important; mso-table-rspace:0pt !important; }
+    table { border-spacing:0 !important; border-collapse:collapse !important; table-layout:fixed !important; margin:0 auto !important; }
+    img { -ms-interpolation-mode:bicubic; }
+    :root { --brand:#00FF6A; --brand-dark:#00CC4F; --text:#FFFFFF; --muted:#9AA79A; --bg:#000000; --card:#0b0b0b; --divider:#1F1F1F; }
+    @media screen and (max-width:600px) { .container { width:100% !important; } .p-24 { padding:16px !important; } .stack { display:block !important; width:100% !important; } .cta { width:100% !important; } .mobile-center { text-align:center !important; } }
+    @media (prefers-color-scheme: dark) { body, .bg { background-color:#0B0F14 !important; } .card { background:#0F1720 !important; } .text { color:#F5F7FA !important; } .muted { color:#A3ACB9 !important; } .divider { border-color:#1F2A37 !important; } }
+  </style>
+</head>
+<body width="100%" style="margin:0; mso-line-height-rule:exactly; background:var(--bg);">
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all;">${escapeHtml(qs('preheader').value || '')}</div>
+  <center role="article" aria-roledescription="email" lang="it" class="bg" style="width:100%; background:var(--bg);">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr><td align="center">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" class="container" style="width:600px;">
+          <tr>
+            <td class="p-24" style="padding:24px 16px 8px 16px; text-align:left;">
+              <a href="${escapeAttr(qs('site').value || '#')}" style="text-decoration:none; color:var(--text);">
+                <div style="font-family: 'Courier New', Courier, monospace; font-size:20px; font-weight:700; letter-spacing:1px; color:var(--brand);">Daniele Colucci</div>
+              </a>
+            </td>
+          </tr>
+        </table>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" class="container card" style="width:600px; background:var(--card); border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.06);">
+          <tr><td style="height:6px; background:linear-gradient(90deg, var(--brand), #00CC4F, #005F2F);"></td></tr>
+          <tr><td class="p-24" style="padding:24px;">
+            <h1 class="text" style="margin:0 0 8px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:24px; line-height:1.3; color:var(--text);">${escapeHtml(qs('title').value || '')}</h1>
+            <p class="muted" style="margin:0 0 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:14px; line-height:1.6; color:var(--muted);">${escapeHtml(qs('subtitle').value || '')}</p>
+            <p class="text" style="margin:0 0 12px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:16px; line-height:1.7; color:var(--text);">${escapeHtml(qs('opening').value || '')}</p>
+            <p class="text" style="margin:0 0 12px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:16px; line-height:1.7; color:var(--text);">${escapeHtml(qs('mainmsg').value || '')}</p>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px 0;">
+              <tr><td style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:15px; line-height:1.7; color:var(--text);">
+                <ul style="padding-left:20px; margin:0;">
+                  ${li(qs('b1').value)}
+                  ${li(qs('b2').value)}
+                  ${li(qs('b3').value)}
+                </ul>
+              </td></tr>
+            </table>
+            ${qs('withCTA').checked ? ctaBlock() : ''}
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="divider" style="border-top:1px solid var(--divider); margin: 16px 0 16px 0;"><tr><td style="height:1px; line-height:1px; font-size:0;">&nbsp;</td></tr></table>
+            ${qs('withPS').checked ? `<p class="muted" style="margin:0 0 12px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:14px; line-height:1.7; color:var(--muted);">P.S. ${escapeHtml(qs('ps').value || '')}</p>` : ''}
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:16px;">
+              <tr>
+                <td class="stack" width="56" style="width:56px; vertical-align:top;">
+                  <div style="width:56px; height:56px; display:flex; align-items:center; justify-content:center; border-radius:6px; background:linear-gradient(180deg, rgba(0,255,106,0.12), transparent); font-family: 'Courier New', monospace; font-size:12px; font-weight:700; color:var(--brand);">DC</div>
+                </td>
+                <td class="stack" style="padding-left:12px; vertical-align:top;">
+                  <p class="text" style="margin:0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:15px; line-height:1.6; color:var(--text); font-weight:600;">Daniele Colucci</p>
+                  <p class="muted" style="margin:0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:14px; line-height:1.6; color:var(--muted);">${escapeHtml(qs('role').value || '')} · ${escapeHtml(qs('company').value || '')}</p>
+                  <p class="muted" style="margin:6px 0 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:13px; line-height:1.6; color:var(--muted);">
+                    <a href="tel:${escapeAttr(qs('phone').value || '')}" style="color:var(--muted); text-decoration:none;">${escapeHtml(qs('phone').value || '')}</a> · 
+                    <a href="mailto:${escapeAttr(qs('email').value || '')}" style="color:var(--muted); text-decoration:none;">${escapeHtml(qs('email').value || '')}</a> · 
+                    <a href="${escapeAttr(qs('linkedin').value || '#')}" style="color:var(--muted); text-decoration:none;">LinkedIn</a>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td></tr>
+        </table>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" class="container" style="width:600px;">
+          <tr><td class="p-24" style="padding:16px 24px 40px 24px; text-align:center;">
+            <p class="muted" style="margin:0 0 8px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:12px; line-height:1.6; color:var(--muted);">
+              Ricevi questa email da Daniele Colucci. Indirizzo: ${escapeHtml(qs('address').value || '')}.
+            </p>
+            <p class="muted" style="margin:0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:12px; line-height:1.6; color:var(--muted);">
+              <a href="${escapeAttr(qs('prefs').value || '#')}" style="color:var(--muted); text-decoration:underline;">Preferenze</a> · 
+              <a href="${escapeAttr(qs('unsub').value || '#')}" style="color:var(--muted); text-decoration:underline;">Disiscriviti</a> · 
+              <a href="${escapeAttr(qs('privacy').value || '#')}" style="color:var(--muted); text-decoration:underline;">Privacy</a>
+            </p>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </center>
+</body>
+</html>`;
+
+    function li(val){ if(!val) return ''; return `<li>${escapeHtml(val)}</li>` }
+    function ctaBlock(){ return `<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 8px 0 20px 0;">
+  <tr><td>
+    <a class="cta" href="${escapeAttr(qs('ctaUrl').value || '#')}" target="_blank" style="background:var(--brand); color:#001a09; text-decoration:none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-size:16px; line-height:1; padding:14px 22px; display:inline-block; border-radius:10px; font-weight:800;">${escapeHtml(qs('ctaText').value || 'Scopri di più')}</a>
+  </td></tr>
+</table>` }
+
+    function escapeHtml(str){ return (str||'').replace(/[&<>"]/g, s=>({"&":"&amp;","<":"&lt;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s])) }
+    function escapeAttr(str){ return (str||'').replace(/"/g,'&quot;') }
+
+    // NOTE: fix typo in regex above -> we'll implement robust escapes instead
+    function sanitize(s){ return (s||'').toString() }
+
+    const withCTA = qs('withCTA');
+    const withPS = qs('withPS');
+    withCTA.addEventListener('change',()=>{ qs('ctaBlock').style.display = withCTA.checked? 'block':'none' })
+    withPS.addEventListener('change',()=>{ const on=withPS.checked; qs('ps').style.display = on?'block':'none'; qs('psLabel').style.display = on?'block':'none'; })
+
+    function generate(){
+      const html = template();
+      qs('htmlOut').value = html;
+      const iframe = qs('preview');
+      iframe.srcdoc = html;
+    }
+
+    function copy(text){ navigator.clipboard.writeText(text).catch(()=>{}); }
+
+    qs('gen').addEventListener('click', generate);
+    qs('copyHtml').addEventListener('click', ()=> copy(qs('htmlOut').value));
+    qs('copySubject').addEventListener('click', ()=> copy(qs('subject').value));
+    qs('copyPreheader').addEventListener('click', ()=> copy(qs('preheader').value));
+
+    qs('downloadHtml').addEventListener('click', ()=>{
+      const blob = new Blob([qs('htmlOut').value], {type:'text/html'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'email-daniele-colucci.html';
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    });
+
+    // Defaults for quick test
+    qs('subject').value = 'Proposta di collaborazione';
+    qs('preheader').value = 'Una breve anteprima dell\'email (40–90 caratteri).';
+    qs('title').value = 'Proposta per [Azienda]';
+    qs('subtitle').value = 'Come posso portare valore al tuo team in 2 settimane';
+    qs('opening').value = 'Grazie per il tempo e l\'attenzione. Ti scrivo per proporti una collaborazione su …';
+    qs('mainmsg').value = 'In breve: posso aiutarti a …; sotto trovi 3 punti rapidi.';
+    qs('b1').value = 'Risultato X in 14 giorni';
+    qs('b2').value = 'Case study disponibile su richiesta';
+    qs('b3').value = 'Call di 15 minuti quando preferisci';
+    qs('ctaText').value = 'Prenota una call';
+    qs('ctaUrl').value = 'https://calendly.com/';
+    qs('role').value = 'Consulente';
+    qs('company').value = 'Freelance';
+    qs('phone').value = '+39 000 000 0000';
+    qs('email').value = 'daniele@example.com';
+    qs('linkedin').value = 'https://www.linkedin.com/in/';
+    qs('site').value = 'https://example.com';
+    qs('prefs').value = '#';
+    qs('unsub').value = '#';
+    qs('privacy').value = '#';
+    qs('address').value = 'Roma, Italia';
+
+    // First render
+    generate();
+
+    // Fix escapeHtml bug (overwrite with correct impl)
+    function safeMap(ch){
+      switch(ch){
+        case '&': return '&amp;';
+        case '<': return '&lt;';
+        case '>': return '&gt;';
+        case '"': return '&quot;';
+        case "'": return '&#39;';
+        default: return ch;
+      }
+    }
+    window.escapeHtml = function(str){ return (str==null?'':String(str)).replace(/[&<>"']/g, safeMap) }
+    window.escapeAttr = function(str){ return (str==null?'':String(str)).replace(/[&"']/g, safeMap) }
+  </script>
+</body>
+</html>
